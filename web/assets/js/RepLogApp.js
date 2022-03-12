@@ -10,16 +10,18 @@
                 'click',
                 this.handleRepLogDelete.bind(this)
             );
+
             this.$wrapper.find('tbody tr').on(
                 'click',
                 this.handleRowClick.bind(this)
             );
 
+            console.log(this.helper, Object.keys(this.helper));
+            console.log(Helper, Object.keys(Helper));
+            console.log(this.helper.calculateTotalWeight())
         },
 
-        whatIsThis: function(greeting) {
-            console.log(this, greeting);
-        },
+
 
         updateTotalRepLogDelete: function (){
             this.$wrapper.find('.js-total-weight').html(
@@ -63,7 +65,7 @@
     var Helper = function($wrapper) {
             this.$wrapper = $wrapper;
         };
-        Helper.calculateTotalWeight = function (){
+        Helper.prototype.calculateTotalWeight = function (){
             var totalWeight = 0;
             this.$wrapper.find('tbody tr').each(function (){
                 totalWeight+=$(this).data('weight');
