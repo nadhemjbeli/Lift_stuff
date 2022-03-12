@@ -60,9 +60,8 @@
     {{ parent() }}
     <script src="{{ asset('assets/js/RepLogApp.js') }}"></script>
     <script>
-        $(document).ready(function (){
+        $(document).ready(function() {
             var $wrapper = $('.js-rep-log-table');
-
             var repLogApp = new RepLogApp($wrapper);
         });
 

@@ -5,20 +5,22 @@
         this.$wrapper = $wrapper;
         this.helper = new Helper($wrapper);
 
-        this.$wrapper.find('.js-delete-rep-log').on(
+        this.$wrapper.on(
             'click',
+            '.js-delete-rep-log',
             this.handleRepLogDelete.bind(this)
         );
 
-        this.$wrapper.find('tbody tr').on(
+        this.$wrapper.on(
             'click',
+            'tbody tr',
             this.handleRowClick.bind(this)
         );
-
-        this.$wrapper.find('.js-new-rep-log-form').on(
+        this.$wrapper.on(
             'submit',
+            '.js-new-rep-log-form',
             this.handleNewFormSubmit.bind(this)
-        )
+        );
 
     };
     
@@ -26,7 +28,7 @@
 
 
 
-        updateTotalRepLogDelete: function (){
+        updateTotalWeightLifted: function (){
             this.$wrapper.find('.js-total-weight').html(
                 this.helper.calculateTotalWeight()
             );
@@ -50,7 +52,7 @@
                 success: function (){
                     $row.fadeOut('normal', function (){
                         $row.remove();
-                        self.updateTotalRepLogDelete();
+                        self.updateTotalWeightLifted();
                     });
                 }
             })
@@ -63,17 +65,21 @@
         handleNewFormSubmit: function(e){
             e.preventDefault();
             var $form = $(e.currentTarget);
-            var $tbody = this.$wrapper.find('tbody');
+            var formData = {};
+            $.each($form.serializeArray(), function(key, fieldData){
+                formData[fieldData.name] = fieldData.value;
+
+            });
             $.ajax({
-                url: $form.attr('action'),
+                url: $form.data('url'),
                 method: 'POST',
-                data: $form.serialize(),
-                success: function (data) {
-                    $tbody.append(data)
+                data: JSON.stringify(formData),
+                success: function(data) {
+                    //todo
+                    console.log('success!')
                 },
                 error: function(jqXHR){
-                    $form.closest('.js-new-rep-log-form-wrapper')
-                        .html(jqXHR.responseText)
+                    console.log('error!')
                 }
             })
         }
