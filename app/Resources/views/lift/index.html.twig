@@ -68,55 +68,9 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script src="{{ asset('assets/js/RepLogApp.js') }}"></script>
     <script>
-        var RepLogApp ={
-            initialize: function($wrapper){
-                this.$wrapper = $wrapper;
-
-                this.$wrapper.find('.js-delete-rep-log').on(
-                    'click',
-                    this.handleRepLogDelete
-                );
-                this.$wrapper.find('tbody tr').on(
-                    'click',
-                    this.handleRowClick
-                );
-
-            },
-            updateTotalRepLogDelete: function (){
-                var totalWeight = 0;
-                this.$wrapper.find('tbody tr').each(function (){
-                    totalWeight+=$(this).data('weight');
-                })
-                this.$wrapper.find('.js-total-weight').html(totalWeight);
-            },
-            handleRepLogDelete: function (e){
-                e.preventDefault();
-
-                $(this).addClass('text-danger');
-
-                $(this).find('.fa')
-                    .removeClass('fa-trash')
-                    .addClass('fa-spinner')
-                    .addClass('fa-spin');
-                var deleteUrl = $(this).data('url');
-                var $row = $(this).closest('tr');
-                $.ajax({
-                    url: deleteUrl,
-                    method: 'DELETE',
-                    success: function (){
-                        $row.fadeOut('normal', function (){
-                            $row.remove();
-                            RepLogApp.updateTotalRepLogDelete();
-                        });
-                    }
-                })
-            },
-            handleRowClick: function (){
-                console.log('row clicked')
-            }
-        };
-
+        console.log(window)
         $(document).ready(function (){
             var $table = $('.js-rep-log-table');
 
