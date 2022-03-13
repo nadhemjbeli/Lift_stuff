@@ -1,13 +1,24 @@
-const aGreatNumber = 10;
-const aGreatObject = {withGreatKeys:true};
-aGreatObject.withGreatKeys = false;
-
-if (true){
-    // aGreatNumber = 42;
+class AGreatClass {
+    constructor(greatNumber) {
+        this.greatNumber = greatNumber;
+    }
+    returnGreatThings() {
+        return this.greatNumber;
+    }
 }
 
-setTimeout(()=>{
-    console.log(aGreatNumber);
-    console.log(aGreatObject);
-}, 1000);
-console.log('waiting...');
+class AnotherGreatClass extends AGreatClass{
+    constructor(greatNumber, greatWord) {
+        super(greatNumber);
+        this.greatWord = greatWord;
+    }
+    returnGreatThings() {
+        let greatNumber = super.returnGreatThings();
+        return [greatNumber, this.greatWord];
+    }
+}
+
+const aGreatObject = new AnotherGreatClass(42, 'adventure');
+console.log(
+    aGreatObject.returnGreatThings()
+);
