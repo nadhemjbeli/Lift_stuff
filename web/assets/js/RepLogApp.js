@@ -1,6 +1,6 @@
 'use strict';
 
-(function(window, $, Routing){
+(function(window, $, Routing, swal){
     window.RepLogApp = function($wrapper){
         this.$wrapper = $wrapper;
         this.helper = new Helper($wrapper);
@@ -47,28 +47,44 @@
                 this.helper.calculateTotalWeight()
             );
         },
-        handleRepLogDelete: function (e){
+        handleRepLogDelete: function (e) {
             e.preventDefault();
 
             var $link = $(e.currentTarget);
-            $link.addClass('text-danger');
 
+            var self = this;
+            swal({
+                title: 'Delete this log?',
+                text: 'What? Did you not actually lift this?',
+                showCancelButton: true,
+                showLoaderOnConfirm: true,
+                preConfirm: function() {
+                    return self._deleteRepLog($link);
+                }
+            }).catch(function(arg) {
+                // canceling is cool!
+            });
+        },
+
+        _deleteRepLog: function($link) {
+            $link.addClass('text-danger');
             $link.find('.fa')
                 .removeClass('fa-trash')
                 .addClass('fa-spinner')
                 .addClass('fa-spin');
+
             var deleteUrl = $link.data('url');
             var $row = $link.closest('tr');
             var self = this;
-            $.ajax({
+
+            return $.ajax({
                 url: deleteUrl,
-                method: 'DELETE',
-                success: function (){
-                    $row.fadeOut('normal', function (){
-                        $row.remove();
-                        self.updateTotalWeightLifted();
-                    });
-                }
+                method: 'DELETE'
+            }).then(function() {
+                $row.fadeOut('normal', function () {
+                    $(this).remove();
+                    self.updateTotalWeightLifted();
+                });
             })
         },
 
@@ -169,4 +185,4 @@
         }
     })
 
-})(window, jQuery, Routing);
+})(window, jQuery, Routing, swal);
