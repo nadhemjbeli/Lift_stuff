@@ -37,9 +37,9 @@
             $.ajax({
                 url: Routing.generate('rep_log_list'),
             }).then(data => {
-                $.each(data.items, (key, repLog) => {
+                for(let repLog of data.items){
                     this._addRow(repLog);
-                });
+                }
             })
         }
 
@@ -95,10 +95,10 @@
             e.preventDefault();
             const $form = $(e.currentTarget);
             const formData = {};
-            $.each($form.serializeArray(), (key, fieldData) => {
+            for(let fieldData of $form.serializeArray()){
                 formData[fieldData.name] = fieldData.value;
 
-            });
+            }
             this._saveRepLog(formData)
                 .then(data => {
                     this._clearForm();
@@ -133,18 +133,18 @@
         _mapErrorsToForm(errorData) {
             this._removeFormErrors();
             const $form = this.$wrapper.find(RepLogApp._selectors.newRepForm);
-            $form.find(':input').each( (index, element)=> {
+            for(let element of $form.find(':input')){
                 const fieldName = $(element).attr('name');
                 const $wrapper = $(element).closest('.form-group')
                 if(!errorData[fieldName]) {
                     // no error!
-                    return;
+                    continue;
                 }
                 const $error = $('<span class="js-field-error help-block"></span>');
                 $error.html(errorData[fieldName]);
                 $wrapper.append($error);
                 $wrapper.addClass('has-error');
-            })
+            }
         }
 
         _removeFormErrors() {
@@ -198,9 +198,9 @@
 
         static _calculateWeight($elements){
             let totalWeight = 0;
-            $elements.each( (index, element)=>{
+            for (let element of $elements){
                 totalWeight+=$(element).data('weight');
-            })
+            }
             return totalWeight;
         }
     }
