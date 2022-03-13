@@ -1,10 +1,12 @@
 'use strict';
 
 (function(window, $, Routing, swal){
+    let HelperInstances = new Map();
     class RepLogApp{
         constructor($wrapper) {
             this.$wrapper = $wrapper;
-            this.helper = new Helper($wrapper);
+            this.repLogs = [];
+            HelperInstances.set(this, new Helper(this.repLogs));
 
             this.loadRepLogs();
 
@@ -40,12 +42,13 @@
                 for(let repLog of data.items){
                     this._addRow(repLog);
                 }
+                console.log(this.repLogs, this.repLogs.includes(data.items[0]));
             })
         }
 
         updateTotalWeightLifted(){
             this.$wrapper.find('.js-total-weight').html(
-                this.helper.getTotalWeightString()
+                HelperInstances.get(this).getTotalWeightString()
             );
         }
 
@@ -161,6 +164,7 @@
         }
 
         _addRow(repLog) {
+            this.repLogs.push(repLog);
             // let {id, itemLabel, reps} = repLog
             // console.log(id, itemLabel, reps);
             const html = rowTemplate(repLog);
@@ -174,15 +178,15 @@
      * A "private" object
      */
     class Helper{
-        constructor($wrapper) {
-            this.$wrapper = $wrapper;
+        constructor(repLogs) {
+            this.repLogs = repLogs;
         }
 
 
 
         calculateTotalWeight(){
             return Helper._calculateWeight(
-                this.$wrapper.find('tbody tr')
+                this.repLogs
             )
         }
 
@@ -196,10 +200,10 @@
             return weight + ' lbs';
         }
 
-        static _calculateWeight($elements){
+        static _calculateWeight(repLogs){
             let totalWeight = 0;
-            for (let element of $elements){
-                totalWeight+=$(element).data('weight');
+            for (let repLog of repLogs){
+                totalWeight+= repLog.totalWeightLifted;
             }
             return totalWeight;
         }
