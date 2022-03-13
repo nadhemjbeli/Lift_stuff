@@ -49,7 +49,7 @@
         handleRepLogDelete: function (e) {
             e.preventDefault();
 
-            var $link = $(e.currentTarget);
+            const $link = $(e.currentTarget);
 
             swal({
                 title: 'Delete this log?',
@@ -69,8 +69,8 @@
                 .addClass('fa-spinner')
                 .addClass('fa-spin');
 
-            var deleteUrl = $link.data('url');
-            var $row = $link.closest('tr');
+            const deleteUrl = $link.data('url');
+            const $row = $link.closest('tr');
             var self = this;
 
             return $.ajax({
@@ -78,7 +78,7 @@
                 method: 'DELETE'
             }).then(function() {
                 $row.fadeOut('normal', function () {
-                    $(this).remove();
+                    $row.remove();
                     self.updateTotalWeightLifted();
                 });
             })
@@ -90,8 +90,8 @@
 
         handleNewFormSubmit: function(e){
             e.preventDefault();
-            var $form = $(e.currentTarget);
-            var formData = {};
+            const $form = $(e.currentTarget);
+            const formData = {};
             $.each($form.serializeArray(), (key, fieldData) => {
                 formData[fieldData.name] = fieldData.value;
 
@@ -119,7 +119,7 @@
                         resolve(data);
                     });
                 }).catch(jqXHR => {
-                    var errorData = JSON.parse(jqXHR.responseText);
+                    const errorData = JSON.parse(jqXHR.responseText);
 
                     reject(errorData);
                 });
@@ -128,36 +128,36 @@
 
         _mapErrorsToForm: function (errorData) {
             this._removeFormErrors();
-            var $form = this.$wrapper.find(this._selectors.newRepForm);
+            const $form = this.$wrapper.find(this._selectors.newRepForm);
             $form.find(':input').each( (index, element)=> {
-                var fieldName = $(element).attr('name');
-                var $wrapper = $(element).closest('.form-group')
+                const fieldName = $(element).attr('name');
+                const $wrapper = $(element).closest('.form-group')
                 if(!errorData[fieldName]) {
                     // no error!
                     return;
                 }
-                var $error = $('<span class="js-field-error help-block"></span>');
+                const $error = $('<span class="js-field-error help-block"></span>');
                 $error.html(errorData[fieldName]);
                 $wrapper.append($error);
                 $wrapper.addClass('has-error');
             })
         },
         _removeFormErrors: function() {
-            var $form = this.$wrapper.find(this._selectors.newRepForm);
+            const $form = this.$wrapper.find(this._selectors.newRepForm);
             $form.find('.js-field-error').remove();
             $form.find('.form-group').removeClass('has-error');
         },
         _clearForm: function() {
             this._removeFormErrors();
 
-            var $form = this.$wrapper.find(this._selectors.newRepForm);
+            const $form = this.$wrapper.find(this._selectors.newRepForm);
             $form[0].reset();
         },
         _addRow: function(repLog) {
-            var tplText = $('#js-rep-log-row-template').html();
-            var tpl = _.template(tplText);
+            const tplText = $('#js-rep-log-row-template').html();
+            const tpl = _.template(tplText);
 
-            var html = tpl(repLog);
+            const html = tpl(repLog);
             this.$wrapper.find('tbody')
                 .append($.parseHTML(html));
             this.updateTotalWeightLifted();
@@ -166,13 +166,13 @@
     /**
      * A "private" object
      */
-    var Helper = function($wrapper) {
+    const Helper = function($wrapper) {
             this.$wrapper = $wrapper;
         };
 
     $.extend(Helper.prototype, {
         calculateTotalWeight: function (){
-            var totalWeight = 0;
+            let totalWeight = 0;
             this.$wrapper.find('tbody tr').each( (index, element)=>{
                 totalWeight+=$(element).data('weight');
             })
