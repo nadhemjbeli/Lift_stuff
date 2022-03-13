@@ -85,20 +85,34 @@
 
             });
             var self = this;
-            $.ajax({
-                url: $form.data('url'),
-                method: 'POST',
-                data: JSON.stringify(formData),
-                success: function(data) {
+            this._saveRepLog(formData)
+                .then(function(data) {
                     self._clearForm();
                     self._addRow(data);
-                },
-                error: function(jqXHR){
+                }).catch(function(errorData) {
+                self._mapErrorsToForm(errorData.errors);
+            });
+        },
+
+        _saveRepLog: function(data) {
+            return new Promise(function(resolve, reject) {
+                $.ajax({
+                    url: Routing.generate('rep_log_new'),
+                    method: 'POST',
+                    data: JSON.stringify(data)
+                }).then(function(data, textStatus, jqXHR) {
+                    $.ajax({
+                        url: jqXHR.getResponseHeader('Location')
+                    }).then(function(data) {
+                        // we're finally done!
+                        resolve(data);
+                    });
+                }).catch(function(jqXHR) {
                     var errorData = JSON.parse(jqXHR.responseText);
-                    console.log('error!')
-                    self._mapErrorsToForm(errorData.errors)
-                }
-            })
+
+                    reject(errorData);
+                });
+            });
         },
 
         _mapErrorsToForm: function (errorData) {
